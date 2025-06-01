@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Animated Heart Frame with Malak</title>
+<style>
+  /* Background with subtle repeated heart shapes in light pink over black */
+  @keyframes backgroundShift {
+    0% { background-position: 0 0, 50% 50%; }
+    50% { background-position: 100% 0, 50% 50%; }
+    100% { background-position: 0 0, 50% 50%; }
+  }
+
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    background-color: black;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Layered background with hearts pattern */
+    background-image:
+      radial-gradient(circle at 10% 10%, rgba(255,192,203,0.15) 10px, transparent 11px),
+      radial-gradient(circle at 30% 30%, rgba(255,192,203,0.12) 8px, transparent 9px),
+      radial-gradient(circle at 60% 70%, rgba(255,192,203,0.1) 12px, transparent 13px),
+      radial-gradient(circle at 80% 50%, rgba(255,192,203,0.14) 7px, transparent 8px),
+      radial-gradient(circle at 50% 80%, rgba(255,192,203,0.13) 9px, transparent 10px);
+    background-repeat: repeat;
+    background-size: 100px 100px;
+    animation: backgroundShift 60s linear infinite;
+  }
+
+  .heart-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 160px;
+    height: 160px;
+    transform: translate(-50%, -50%);
+    cursor: default;
+    animation: beat 1.2s infinite alternate ease-in-out;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Heart frame shape using CSS with border and transparent fill */
+  .heart-frame {
+    position: relative;
+    width: 100px;
+    height: 90px;
+    background: transparent;
+    border: 5px solid red;
+    border-radius: 20px 20px 0 0;
+    box-sizing: border-box;
+    transform: rotate(-45deg);
+  }
+  .heart-frame::before,
+  .heart-frame::after {
+    content: "";
+    position: absolute;
+    width: 100px;
+    height: 90px;
+    background: transparent;
+    border: 5px solid red;
+    border-radius: 50%;
+    box-sizing: border-box;
+  }
+  .heart-frame::before {
+    top: -50px;
+    left: 0;
+    border-bottom: none;
+    border-right: none;
+  }
+  .heart-frame::after {
+    top: 0;
+    left: 50px;
+    border-bottom: none;
+    border-left: none;
+  }
+
+  .text-in-heart {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: rotate(45deg) translate(-50%, -50%);
+    color: pink;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 900;
+    font-size: 32px;
+    user-select: none;
+    pointer-events: none;
+    text-shadow: 0 0 8px #ff77ffcc;
+  }
+
+  @keyframes beat {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1.15);
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="heart-container" id="heart">
+    <div class="heart-frame"></div>
+    <div class="text-in-heart">malak</div>
+  </div>
+
+<script>
+  const heart = document.getElementById('heart');
+
+  let viewportWidth = window.innerWidth;
+  let viewportHeight = window.innerHeight;
+
+  let posX = viewportWidth / 2;
+  let posY = viewportHeight / 2;
+
+  let velocityX = 2 + Math.random() * 2; // speed px per frame
+  let velocityY = 2 + Math.random() * 2;
+
+  velocityX *= Math.random() > 0.5 ? 1 : -1;
+  velocityY *= Math.random() > 0.5 ? 1 : -1;
+
+  const heartWidth = 160;
+  const heartHeight = 160;
+
+  function animate() {
+    posX += velocityX;
+    posY += velocityY;
+
+    if (posX < heartWidth / 2) {
+      posX = heartWidth / 2;
+      velocityX = -velocityX;
+    }
+    if (posX > viewportWidth - heartWidth / 2) {
+      posX = viewportWidth - heartWidth / 2;
+      velocityX = -velocityX;
+    }
+    if (posY < heartHeight / 2) {
+      posY = heartHeight / 2;
+      velocityY = -velocityY;
+    }
+    if (posY > viewportHeight - heartHeight / 2) {
+      posY = viewportHeight - heartHeight / 2;
+      velocityY = -velocityY;
+    }
+
+    heart.style.left = posX + 'px';
+    heart.style.top = posY + 'px';
+
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('resize', () => {
+    viewportWidth = window.innerWidth;
+    viewportHeight = window.innerHeight;
+  });
+
+  animate();
+</script>
+</body>
+</html>
+
